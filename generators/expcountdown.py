@@ -22,7 +22,7 @@ class ExpCountdownGenerator(TaskGenerator):
         self.internalData["minExponent"] = (int,-5)
         self.internalData["maxExponent"] = (int,8)
 
-        self.sender = "T-Minus <tminus@fastquake.com"
+        self.sender = "T-Minus <tminus@fastquake.com>"
 
         self.maxExponent = 8
 

@@ -34,6 +34,7 @@ def queueConsumer(queue,mlr):
             taskfs.deleteTask(mtask)
     pass
 
+taskfs.mkTasksDir()
 myQueue = MailQueue()
 mlr = Mailer()
 syncIE = IntervalExec(syncQueueToFS, 60, myQueue)

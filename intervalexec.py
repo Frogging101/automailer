@@ -13,12 +13,15 @@ class IntervalExec:
             self.args = [self.args]
 
     def execute(self):
+        """Execution loop"""
         self.run = True
         with self.runlock:
             run = self.run
         print self.func.__name__+" will now execute every "+str(self.interval)+"s"
         while run:
             self.func(*self.args)
+            # Sleep in increments of 1 second, so that the thread may be
+            # interrupted without having to wait for the rest of the interval to complete
             for sec in range(self.interval):
                 sleep(1)
                 with self.runlock:
@@ -28,6 +31,7 @@ class IntervalExec:
         print self.func.__name__+" executing every "+str(self.interval)+"s Finished"
 
     def go(self):
+        """Begin execution"""
         with self.runlock:
             run = self.run
         if not run:
@@ -35,6 +39,7 @@ class IntervalExec:
             self.runthread.start()
 
     def stop(self):
+        """Stop execution"""
         with self.runlock:
             self.run = False
             #self.runthread.join()

@@ -5,24 +5,33 @@ import hashlib
 
 TASKSDIR = os.path.dirname(os.path.abspath(__file__))+"/tasks/"
 
-# Parses a task object output as a JSON dict
+def mkTasksDir():
+    if not os.path.exists(TASKSDIR):
+        os.makedirs(TASKSDIR)
+
 def parseTask(taskjson):
-    mtd = json.loads(taskjson)
-    sender = str(mtd["sender"])
-    replyto = str(mtd["replyto"])
-    if mtd["recipients"]:
-        recipients = [str(r) for r in mtd["recipients"]]
-    else:
-        recipients = []
-    if mtd["bcc"]:
-        bcc = [str(r) for r in mtd["bcc"]]
-    else:
-        bcc = []
-    subject = str(mtd["subject"])
-    body = str(mtd["body"])
-    scheduledTime = int(mtd["scheduledTime"])
-    mt = MailTask(sender,recipients,subject,body,scheduledTime,bcc=bcc,replyto=replyto)
-    return mt
+    """Parses a task object output as a JSON dict"""
+
+    try:
+        mtd = json.loads(taskjson)
+        sender = str(mtd["sender"])
+        replyto = str(mtd["replyto"])
+        if mtd["recipients"]:
+            recipients = [str(r) for r in mtd["recipients"]]
+        else:
+            recipients = []
+        if mtd["bcc"]:
+            bcc = [str(r) for r in mtd["bcc"]]
+        else:
+            bcc = []
+        subject = str(mtd["subject"])
+        body = str(mtd["body"])
+        scheduledTime = int(mtd["scheduledTime"])
+        mt = MailTask(sender,recipients,subject,body,scheduledTime,bcc=bcc,replyto=replyto)
+        return mt
+    except KeyError:
+        raise ValueError        
+
 
 def getTasks():
     tasks = set()
@@ -30,7 +39,10 @@ def getTasks():
     for fn in dirlist:
         path = TASKSDIR+fn
         f = open(path,'r')
-        tasks.add(parseTask(f.read()))
+        try:
+            tasks.add(parseTask(f.read()))
+        except ValueError:
+            print "Failed to parse task file "+fn
         f.close()
     return tasks
 
@@ -48,11 +60,11 @@ def deleteTask(task):
         print "Error removing "+str(task.scheduledTime)+"-"+md5Task(task)
 
 def md5Task(task):
+    """Return 8 character md5sum of task attributes combined"""
     lists = list(task.recipients)
     if task.bcc:
         lists.extend(task.bcc)
     instr = str(task.sender)+str(task.replyto)+\
             reduce(lambda x, y: str(x)+str(y), lists)+\
             str(task.subject)+str(task.body)+str(task.scheduledTime)
-    #print "md5ing "+instr
     return hashlib.md5(instr).hexdigest()[:8]
