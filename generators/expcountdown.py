@@ -90,17 +90,20 @@ maxExp = gen.internalData["maxExponent"]
 eventTS = int(time.mktime(eventDate.utctimetuple()))
 
 relativeTimestamps = [int(-((2**x)*86400)) for x in range(minExp,maxExp+1)]
+exponents = range(minExp,maxExp+1)
 
-for ts in relativeTimestamps:
+for i,ts in enumerate(relativeTimestamps):
     scheduledTime = eventTS+ts
     if scheduledTime < time.time():
         continue
-    subject = eventName
     remaining = secondsToStr(ts)
-    msg = remaining+' '
+    s = remaining+' '
     if remaining[-1:] == 's':
-        msg += "remain"
+        s += "remain"
     else:
-        msg += "remains"
+        s += "remains"
+    msg = s
+    subject = eventName+' - '+s
+    gen.otherData["Exponent"] = exponents[i]
     gen.writeMailTask(subject,msg,scheduledTime)
 

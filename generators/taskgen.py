@@ -17,7 +17,7 @@ except ImportError:
 class TaskGenerator(object):
     def __init__(self):
         self.name = 'DefaultGen'
-        self.initiator = "Unknown"
+        self.initiator = None
         self.gentime = None
         self.otherData = collections.OrderedDict()
         self.internalData = {}
@@ -76,7 +76,7 @@ class TaskGenerator(object):
                     aparser.add_argument('--'+k.lower(),type=v[0],default=v[1])
 
         if not self.initiator:
-            aparser.add_argument("-f", "--from", dest='initiator', default="Automailer")
+            aparser.add_argument("-f", "--from", dest='initiator', default="Unknown")
         if not self.sender:
             aparser.add_argument("sender") #TODO: Validate email
         if not self.recipients:
