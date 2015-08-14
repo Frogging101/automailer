@@ -7,7 +7,7 @@ import time
 import copy
 
 def syncQueueToFS(queue):
-    print "Syncing queue"
+    #print "Syncing queue"
     tasks = getTasks()
     queue.sync(tasks)
 

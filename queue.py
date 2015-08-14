@@ -38,9 +38,9 @@ class MailQueue:
                 for thing in taskset:
                     self.add(thing)
                 for thing in self.tasks.copy():
-                    print str(thing)+" exists internally"
+                    #print str(thing)+" exists internally"
                     if thing not in taskset:
-                        print str(thing)+ " does not exist externally, deleting"
+                        #print str(thing)+ " does not exist externally, deleting"
                         self.delete(thing)
 
     def getUpcoming(self):
