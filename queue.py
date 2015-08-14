@@ -34,7 +34,7 @@ class MailQueue:
 
     def sync(self,taskset):
         with self.lock:
-            if taskset:
+            if taskset is not None:
                 for thing in taskset:
                     self.add(thing)
                 for thing in self.tasks.copy():

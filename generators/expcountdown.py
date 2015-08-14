@@ -21,6 +21,7 @@ class ExpCountdownGenerator(TaskGenerator):
 
         self.internalData["minExponent"] = (int,-5)
         self.internalData["maxExponent"] = (int,8)
+        self.internalData["personalMessage"] = (str,'')
 
         self.sender = "T-Minus <tminus@fastquake.com>"
 
@@ -87,6 +88,7 @@ eventDate = gen.otherData['Event-Date']
 eventName = gen.otherData["Event-Name"]
 minExp = gen.internalData["minExponent"]
 maxExp = gen.internalData["maxExponent"]
+personalMessage = gen.internalData["personalMessage"]
 eventTS = int(time.mktime(eventDate.utctimetuple()))
 
 relativeTimestamps = [int(-((2**x)*86400)) for x in range(minExp,maxExp+1)]
@@ -103,6 +105,7 @@ for i,ts in enumerate(relativeTimestamps):
     else:
         s += "remains"
     msg = s
+    msg += '\n'+personalMessage
     subject = eventName+' - '+s
     gen.otherData["Exponent"] = exponents[i]
     gen.writeMailTask(subject,msg,scheduledTime)
