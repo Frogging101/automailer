@@ -92,6 +92,8 @@ personalMessage = gen.internalData["personalMessage"]
 eventTS = int(time.mktime(eventDate.utctimetuple()))
 
 relativeTimestamps = [int(-((2**x)*86400)) for x in range(minExp,maxExp+1)]
+relativeTimestamps.append(0)
+
 exponents = range(minExp,maxExp+1)
 
 for i,ts in enumerate(relativeTimestamps):
@@ -99,14 +101,22 @@ for i,ts in enumerate(relativeTimestamps):
     if scheduledTime < time.time():
         continue
     remaining = secondsToStr(ts)
-    s = remaining+' '
-    if remaining[-1:] == 's':
-        s += "remain"
+    if ts != 0:
+        s = remaining+' '
+        s += "remaining"
+#        if remaining[-1:] == 's':
+#            s += "remain."
+#        else:
+#            s += "remains."
     else:
-        s += "remains"
-    msg = s
-    msg += '\n'+personalMessage
+        s = "Countdown complete"
+    msg = s+'.'
+    if personalMessage:
+        msg += '\n'+personalMessage
     subject = eventName+' - '+s
-    gen.otherData["Exponent"] = exponents[i]
+    if ts != 0:
+        gen.otherData["Exponent"] = exponents[i]
+    else:
+        gen.otherData["Exponent"] = None
     gen.writeMailTask(subject,msg,scheduledTime)
 
